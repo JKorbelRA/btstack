@@ -42,6 +42,7 @@
 
 #include "btstack_signal.h"
 
+#include <stdio.h>
 #include <pthread.h>
 #include <signal.h>
 #include <string.h>
