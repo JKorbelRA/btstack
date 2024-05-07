@@ -60,6 +60,7 @@ static void * signal_thread(void *arg) {
     memset(&registration, 0, sizeof(btstack_context_callback_registration_t));
     registration.callback = &signal_callback;
     registration.context  = arg;
+    printf("Signal thread running\n");
 
     while (1){
         // wait for signal
@@ -95,4 +96,7 @@ void btstack_signal_register_callback(int signal, void (*callback)(void)) {
     {
         printf("Failure of pthread_create\n");
     }
+
+    printf("Signal register done.\n");
+
 }
