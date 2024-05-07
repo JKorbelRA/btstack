@@ -68,6 +68,7 @@ static void * signal_thread(void *arg) {
         int sig = 0;
         (void) sigwait(&sigset, &sig);
 
+        printf("Waited sigint\n");
         // execute callback on main thread
         btstack_run_loop_execute_on_main_thread(&registration);
     }
@@ -78,10 +79,19 @@ void btstack_signal_register_callback(int signal, void (*callback)(void)) {
     // block signal
     sigset_t base_mask;
     sigemptyset (&base_mask);
-    sigaddset (&base_mask, signal);
-    sigprocmask (SIG_SETMASK, &base_mask, NULL);
+    if (sigaddset (&base_mask, signal) != 0)
+    {
+        printf("Failure of sigaddset\n");
+    }
+    if (sigprocmask (SIG_SETMASK, &base_mask, NULL) != 0)
+    {
+        printf("Failure of sigprocmask\n");
+    }
 
     // start thread to receive signal
     pthread_t thread;
-    pthread_create(&thread, NULL, signal_thread, (void*) callback);
+    if (pthread_create(&thread, NULL, signal_thread, (void*) callback) != 0)
+    {
+        printf("Failure of pthread_create\n");
+    }
 }
