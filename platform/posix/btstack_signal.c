@@ -68,6 +68,7 @@ static void * signal_thread(void *arg) {
         sigemptyset(&sigset);
         sigaddset(&sigset, SIGINT);
         sigaddset(&sigset, SIGTERM);
+        sigaddset(&sigset, SIGHUP);
         int sig = 0;
         (void) sigwait(&sigset, &sig);
 

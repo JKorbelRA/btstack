@@ -412,6 +412,7 @@ int main(int argc, const char * argv[]){
     // register callback for CTRL-c
     btstack_signal_register_callback(SIGINT, &trigger_shutdown);
     btstack_signal_register_callback(SIGTERM, &trigger_shutdown);
+    btstack_signal_register_callback(SIGHUP, &trigger_shutdown);
 
     main_argc = argc;
     main_argv = argv;
