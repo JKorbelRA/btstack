@@ -405,6 +405,7 @@ int main(int argc, const char * argv[]){
         transport = hci_transport_h4_instance(uart_driver);
     } else {
         transport = hci_transport_h5_instance(uart_driver);
+        printf("Using h5\n");
     }
 
     // setup HCI (to be able to use bcm chipset driver)
