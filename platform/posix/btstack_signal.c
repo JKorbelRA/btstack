@@ -42,7 +42,6 @@
 
 #include "btstack_signal.h"
 
-#include <stdio.h>
 #include <pthread.h>
 #include <signal.h>
 #include <string.h>
@@ -60,19 +59,15 @@ static void * signal_thread(void *arg) {
     memset(&registration, 0, sizeof(btstack_context_callback_registration_t));
     registration.callback = &signal_callback;
     registration.context  = arg;
-    printf("Signal thread running\n");
 
     while (1){
         // wait for signal
         sigset_t sigset;
         sigemptyset(&sigset);
         sigaddset(&sigset, SIGINT);
-        sigaddset(&sigset, SIGTERM);
-        sigaddset(&sigset, SIGHUP);
         int sig = 0;
         (void) sigwait(&sigset, &sig);
 
-        printf("Waited sigint\n");
         // execute callback on main thread
         btstack_run_loop_execute_on_main_thread(&registration);
     }
@@ -83,22 +78,10 @@ void btstack_signal_register_callback(int signal, void (*callback)(void)) {
     // block signal
     sigset_t base_mask;
     sigemptyset (&base_mask);
-    if (sigaddset (&base_mask, signal) != 0)
-    {
-        printf("Failure of sigaddset\n");
-    }
-    if (sigprocmask (SIG_SETMASK, &base_mask, NULL) != 0)
-    {
-        printf("Failure of sigprocmask\n");
-    }
+    sigaddset (&base_mask, signal);
+    sigprocmask (SIG_SETMASK, &base_mask, NULL);
 
     // start thread to receive signal
     pthread_t thread;
-    if (pthread_create(&thread, NULL, signal_thread, (void*) callback) != 0)
-    {
-        printf("Failure of pthread_create\n");
-    }
-
-    printf("Signal register done.\n");
-
+    pthread_create(&thread, NULL, signal_thread, (void*) callback);
 }
