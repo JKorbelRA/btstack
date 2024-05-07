@@ -37,7 +37,9 @@
 
 #define BTSTACK_FILE__ "adv_bearer.c"
 
+#if !defined(ENABLE_LOG_DEBUG)
 #define ENABLE_LOG_DEBUG
+#endif
 
 #include <inttypes.h>
 #include <string.h>
