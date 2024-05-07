@@ -429,21 +429,21 @@ int main(int argc, const char * argv[]){
     main_argv = argv;
 
     // power cycle Bluetooth controller on older models without flowcontrol
-    if (power_cycle){
-        btstack_control_raspi_set_bt_reg_en_pin(bt_reg_en_pin);
-        btstack_control_t *control = btstack_control_raspi_get_instance();
-        control->init(NULL);
-        control->off();
-        usleep( 100000 );
-        control->on();
-    }
+    //if (power_cycle){
+    //    btstack_control_raspi_set_bt_reg_en_pin(bt_reg_en_pin);
+    //    btstack_control_t *control = btstack_control_raspi_get_instance();
+    //    control->init(NULL);
+    //    control->off();
+    //    usleep( 100000 );
+    //    control->on();
+    //}
 
     if (transport_config.flowcontrol){
 
         // re-use current terminal speed (if there was no power cycle)
-        if (!power_cycle){
+        //if (!power_cycle){
             raspi_get_terminal_params( &transport_config );
-        }
+        //}
 
         // with flowcontrol, we use h4 and are done
         btstack_main(main_argc, main_argv);
