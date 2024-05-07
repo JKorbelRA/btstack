@@ -408,14 +408,18 @@ int main(int argc, const char * argv[]){
     hci_event_callback_registration.callback = &packet_handler;
     hci_add_event_handler(&hci_event_callback_registration);
 
+    printf("Registering signal handler for CTRL-C\n");
     // register callback for CTRL-c
     btstack_signal_register_callback(SIGINT, &trigger_shutdown);
+    btstack_signal_register_callback(SIGTERM, &trigger_shutdown);
 
     main_argc = argc;
     main_argv = argv;
 
     // power cycle Bluetooth controller on older models without flowcontrol
     if (power_cycle){
+
+        printf("Cycling power\n");
         btstack_control_raspi_set_bt_reg_en_pin(bt_reg_en_pin);
         btstack_control_t *control = btstack_control_raspi_get_instance();
         control->init(NULL);
@@ -431,6 +435,7 @@ int main(int argc, const char * argv[]){
             raspi_get_terminal_params( &transport_config );
         }
 
+        printf("Running btstack_main\n");
         // with flowcontrol, we use h4 and are done
         btstack_main(main_argc, main_argv);
 
