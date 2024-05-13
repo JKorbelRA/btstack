@@ -418,32 +418,32 @@ int main(int argc, const char * argv[]){
     hci_add_event_handler(&hci_event_callback_registration);
 
     // register callback for CTRL-c
-    struct sigaction exit_action;
-    sigemptyset (&exit_action.sa_mask);
-    exit_action.sa_handler = &trigger_shutdown_sa;
-    exit_action.sa_flags = 0;
-    (void)sigaction(SIGINT, &exit_action, NULL);
-    //btstack_signal_register_callback(SIGINT, &trigger_shutdown);
+    //struct sigaction exit_action;
+    //sigemptyset (&exit_action.sa_mask);
+    //exit_action.sa_handler = &trigger_shutdown_sa;
+    //exit_action.sa_flags = 0;
+    //(void)sigaction(SIGINT, &exit_action, NULL);
+    btstack_signal_register_callback(SIGINT, &trigger_shutdown);
 
     main_argc = argc;
     main_argv = argv;
 
     // power cycle Bluetooth controller on older models without flowcontrol
-    //if (power_cycle){
-    //    btstack_control_raspi_set_bt_reg_en_pin(bt_reg_en_pin);
-    //    btstack_control_t *control = btstack_control_raspi_get_instance();
-    //    control->init(NULL);
-    //    control->off();
-    //    usleep( 100000 );
-    //    control->on();
-    //}
+    if (power_cycle){
+        btstack_control_raspi_set_bt_reg_en_pin(bt_reg_en_pin);
+        btstack_control_t *control = btstack_control_raspi_get_instance();
+        control->init(NULL);
+        control->off();
+        usleep( 100000 );
+        control->on();
+    }
 
     if (transport_config.flowcontrol){
 
         // re-use current terminal speed (if there was no power cycle)
-        //if (!power_cycle){
+        if (!power_cycle){
             raspi_get_terminal_params( &transport_config );
-        //}
+        }
 
         // with flowcontrol, we use h4 and are done
         btstack_main(main_argc, main_argv);
